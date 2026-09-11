@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Central de Caronas Solidárias CAMG — encontre o grupo de carona correspondente ao seu trajeto.">
+  <title>Carona Solidária CAMG</title>
+  <style>
+    :root {
+      --navy: #12365a;
+      --blue: #1f73c9;
+      --blue-light: #eaf4ff;
+      --green: #249447;
+      --green-light: #edf9f0;
+      --red: #d93d3d;
+      --red-light: #fff0f0;
+      --orange: #f2a51a;
+      --text: #17212b;
+      --muted: #667585;
+      --bg: #f6f8fb;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --shadow: 0 10px 30px rgba(18,54,90,.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    .hero {
+      background: linear-gradient(135deg, #0e2f51, #1f5e91);
+      color: white;
+      padding: 42px 20px 55px;
+      text-align: center;
+    }
+
+    .hero-inner {
+      max-width: 1050px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.2);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 15px auto 0;
+      font-size: 1.1rem;
+      color: #e8f2fb;
+    }
+
+    .hero-actions {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-actions a {
+      text-decoration: none;
+      background: white;
+      color: var(--navy);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: -25px auto 60px;
+      padding: 0 18px;
+      position: relative;
+    }
+
+    .intro {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+
+    .intro h2 { margin: 0 0 7px; color: var(--navy); }
+    .intro p { margin: 0; color: var(--muted); }
+
+    .search {
+      margin-top: 18px;
+      width: 100%;
+      padding: 15px 17px;
+      border: 2px solid var(--border);
+      border-radius: 13px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .search:focus { border-color: var(--blue); }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      color: var(--navy);
+    }
+
+    .section-title span {
+      font-size: 1.5rem;
+    }
+
+    .groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      box-shadow: 0 4px 16px rgba(18,54,90,.04);
+    }
+
+    .card-info {
+      min-width: 0;
+    }
+
+    .card-title {
+      font-weight: 800;
+      color: #203244;
+    }
+
+    .status {
+      margin-top: 4px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .status.available { color: var(--green); font-weight: 700; }
+    .status.full { color: var(--red); font-weight: 700; }
+    .status.pending { color: #9a6a00; font-weight: 700; }
+
+    .btn {
+      flex: 0 0 auto;
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 11px;
+      padding: 10px 14px;
+      font-weight: 800;
+      font-size: .88rem;
+      background: var(--green);
+      color: white;
+      transition: transform .15s, filter .15s;
+    }
+
+    .btn:hover { transform: translateY(-1px); filter: brightness(.95); }
+
+    .btn.disabled {
+      background: #edf0f3;
+      color: #8793a0;
+      cursor: not-allowed;
+    }
+
+    .general {
+      background: var(--blue-light);
+      border: 1px solid #cfe5fb;
+    }
+
+    .full {
+      background: var(--red-light);
+      border-color: #f3caca;
+    }
+
+    .guide {
+      margin-top: 28px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .guide h2 { margin-top: 0; color: var(--navy); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .step {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .step strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+
+    .legend {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: .88rem;
+    }
+
+    .pill.blue { background: #e8f2ff; color: #075db0; }
+    .pill.red { background: #fff0f0; color: #bd2626; }
+
+    .rules {
+      margin-top: 28px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .rules h2 { color: var(--navy); margin-top: 0; }
+
+    .rules-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .rule {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      text-align: left;
+    }
+
+    .rule:nth-child(5) {
+      grid-column: 1 / -1;
+    }
+
+    .rule-number {
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--navy);
+      color: white;
+      font-weight: 800;
+      font-size: .95rem;
+    }
+
+    .rule strong {
+      display: block;
+      color: #26384a;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .rule p {
+      margin: 7px 0 0;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .rule-icon {
+      font-size: 1.35rem;
+      margin-right: 4px;
+    }
+
+    .rules-highlight {
+      margin-top: 18px;
+      padding: 16px;
+      background: var(--blue-light);
+      color: var(--navy);
+      border-radius: 13px;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .footer {
+
+      text-align: center;
+      color: var(--muted);
+      padding: 10px 20px 45px;
+      font-size: .9rem;
+    }
+
+    .empty {
+      display: none;
+      background: white;
+      padding: 25px;
+      text-align: center;
+      border-radius: 15px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 720px) {
+      .groups { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .rules-list { grid-template-columns: 1fr; }
+      .rule:nth-child(5) { grid-column: auto; }
+      .card { align-items: flex-start; }
+      .btn { padding: 9px 11px; }
+      .hero { padding-top: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">COMUNIDADE CARONA CAMG</div>
+    <h1>🚗 Carona Solidária CAMG</h1>
+    <p>Encontre o grupo correspondente ao seu trajeto e entre diretamente pelo WhatsApp.</p>
+    <div class="hero-actions">
+      <a href="#grupos">Encontrar minha carona</a>
+      <a href="#regras">Ver regras</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="intro" id="grupos">
+    <h2>📍 Escolha seu trajeto</h2>
+    <p>Procure pelo nome da cidade, bairro ou região. Os grupos disponíveis têm o botão <strong>ENTRAR NO GRUPO</strong>.</p>
+    <input id="search" class="search" type="search" placeholder="🔎 Ex.: Contagem, Betim, Santa Luzia..." aria-label="Pesquisar grupo">
+  </section>
+
+  <section class="section">
+    <div class="section-title"><span>💬</span><h2>Grupos gerais</h2></div>
+    <div class="groups">
+      <article class="card general" data-search="carona solidaria camg ii grupo geral">
+        <div class="card-info">
+          <div class="card-title">Carona Solidária CAMG II</div>
+          <div class="status available">● Grupo disponível</div>
+        </div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/CZPJk0tEkWb1LYogEJhQml?s=cl&p=i&mlu=4">ENTRAR</a>
+      </article>
+      <article class="card full" data-search="carona solidaria camg i grupo geral lotado">
+        <div class="card-info">
+          <div class="card-title">Carona Solidária CAMG I</div>
+          <div class="status full">● Grupo lotado</div>
+        </div>
+        <span class="btn disabled">LOTADO</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><span>🏙️</span><h2>Belo Horizonte e arredores</h2></div>
+    <div class="groups">
+<article class="card" data-search="barreiros arredores belo horizonte">
+        <div class="card-info"><div class="card-title">Carona CAMG: Barreiros e arredores</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/DG9LIssTCrVKwtCw7B4ppv">ENTRAR</a>
+      </article>
+<article class="card" data-search="centro sul belo horizonte">
+        <div class="card-info"><div class="card-title">Carona CAMG: Centro Sul</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/LkhS6EsU4ZvJ4zAWLBYbQ1">ENTRAR</a>
+      </article>
+<article class="card" data-search="faculdade newton paiva gutierrez rua oscar trompowsky">
+        <div class="card-info"><div class="card-title">Carona CAMG: Faculdade Newton Paiva/Gutierrez – Rua Oscar Trompowsky</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="gutierrez grajau arredores">
+        <div class="card-info"><div class="card-title">Carona CAMG: Gutierrez/Grajaú e arredores</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="jaragua dona clara sao luiz">
+        <div class="card-info"><div class="card-title">Carona CAMG: Jaraguá / Dona Clara / São Luiz</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/HnLPYfUNBGE3evZn6Cgolq?mode=gi_t">ENTRAR</a>
+      </article>
+<article class="card" data-search="planalto regiao belo horizonte">
+        <div class="card-info"><div class="card-title">Carona CAMG: Planalto e Região</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="prado belo horizonte">
+        <div class="card-info"><div class="card-title">Carona CAMG: Prado</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/FyxMRlj3JFUFPUPwjDFdMB">ENTRAR</a>
+      </article>
+<article class="card" data-search="regiao nordeste bh belo horizonte">
+        <div class="card-info"><div class="card-title">Carona CAMG: Região Nordeste de BH</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="sao joao batista regiao">
+        <div class="card-info"><div class="card-title">Carona CAMG: São João Batista e região</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/LNz1vzPucWJ7K67gKAHW6g?mode=gi_t">ENTRAR</a>
+      </article>
+<article class="card" data-search="zona leste belo horizonte">
+        <div class="card-info"><div class="card-title">Carona CAMG: Zona Leste</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/C1lE0ZkezodEY9ZKX93JVM">ENTRAR</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><span>🏘️</span><h2>Região Metropolitana</h2></div>
+    <div class="groups">
+<article class="card" data-search="betim">
+        <div class="card-info"><div class="card-title">Carona CAMG: Betim</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/BzGmMVSCr07IPgfs90SpuT">ENTRAR</a>
+      </article>
+<article class="card" data-search="contagem">
+        <div class="card-info"><div class="card-title">Carona CAMG: Contagem</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/Kb32YFP4m883WOULHUTXjA">ENTRAR</a>
+      </article>
+<article class="card" data-search="ibirite">
+        <div class="card-info"><div class="card-title">Carona CAMG: Ibirité</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="lagoa santa">
+        <div class="card-info"><div class="card-title">Carona CAMG: Lagoa Santa</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/BDFQ76LrTCRK6vuxknf4wq">ENTRAR</a>
+      </article>
+<article class="card" data-search="ribeirao das neves">
+        <div class="card-info"><div class="card-title">Carona CAMG: Ribeirão das Neves</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/LhHTinAhzggAHNwlZijMlA">ENTRAR</a>
+      </article>
+<article class="card" data-search="santa luzia">
+        <div class="card-info"><div class="card-title">Carona CAMG: Santa Luzia</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/HCPkPwG5CQP6XVYR9qGERt?mode=gi_t">ENTRAR</a>
+      </article>
+<article class="card" data-search="sao jose da lapa">
+        <div class="card-info"><div class="card-title">Carona CAMG: São José da Lapa</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/CJuq8UA5vKlKnZzHJERW9n">ENTRAR</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><span>🚗</span><h2>Outras localidades</h2></div>
+    <div class="groups">
+<article class="card" data-search="interior mg minas gerais">
+        <div class="card-info"><div class="card-title">Carona CAMG: Interior MG</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="jaboticatubas sao jose de almeida">
+        <div class="card-info"><div class="card-title">Carona CAMG: Jaboticatubas e São José de Almeida</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/EKb8oyWBqTDASZbHcQ8sCy">ENTRAR</a>
+      </article>
+<article class="card" data-search="mantiqueira regiao">
+        <div class="card-info"><div class="card-title">Carona CAMG: Mantiqueira e Região</div><div class="status pending">● Link não disponibilizado</div></div>
+        <span class="btn disabled">EM BREVE</span>
+      </article>
+<article class="card" data-search="ouro preto castelo santa terezinha">
+        <div class="card-info"><div class="card-title">Carona CAMG: Ouro Preto/Castelo/Sta. Terezinha</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/DEoPQITxUasG738lurcm60">ENTRAR</a>
+      </article>
+<article class="card" data-search="sete lagoas">
+        <div class="card-info"><div class="card-title">Carona CAMG: Sete Lagoas</div><div class="status available">● Disponível</div></div>
+        <a class="btn" target="_blank" rel="noopener" href="https://chat.whatsapp.com/JzfTRwYKiwQ23ZYY33UR1i?s=cl&p=a&mlu=4">ENTRAR</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="guide">
+    <h2>📌 Como usar os grupos</h2>
+    <div class="steps">
+      <div class="step"><strong>1. Encontre seu trajeto</strong>Escolha a cidade, bairro ou região mais próxima de você.</div>
+      <div class="step"><strong>2. Entre no grupo</strong>Clique em <b>ENTRAR</b> para abrir o grupo no WhatsApp.</div>
+      <div class="step"><strong>3. Publique corretamente</strong>Use 🔵 para oferecer carona e 🔴 para procurar carona.</div>
+    </div>
+    <div class="legend">
+      <span class="pill blue">🔵 OFEREÇO</span>
+      <span class="pill red">🔴 PROCURO</span>
+    </div>
+  </section>
+
+  <section class="rules" id="regras">
+    <h2>🚗 Antes de participar, combine com a gente!</h2>
+    <p style="margin: 0; color: var(--muted);">5 combinados para uma boa carona</p>
+
+    <div class="rules-list">
+      <div class="rule">
+        <div class="rule-number">01</div>
+        <div>
+          <strong><span class="rule-icon">💬</span>USE O GRUPO PARA CARONAS</strong>
+          <p style="color: var(--muted); font-weight: 400;">Evite mensagens que não tenham relação com caronas.</p>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-number">02</div>
+        <div>
+          <strong><span class="rule-icon">🔒</span>COMBINE OS DETALHES NO PRIVADO</strong>
+          <p style="color: var(--muted); font-weight: 400;">Horário, local e valores devem ser tratados diretamente entre as pessoas envolvidas.</p>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-number">03</div>
+        <div>
+          <strong><span class="rule-icon">⏰</span>SE NÃO PUDER IR, AVISE!</strong>
+          <p>Combinou e surgiu um imprevisto? Avise com antecedência. Quem marca e não aparece poderá ser retirado do grupo.</p>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-number">04</div>
+        <div>
+          <strong><span class="rule-icon">🤝</span>RESPEITE A COMUNIDADE</strong>
+          <p style="color: var(--muted); font-weight: 400;">Trate os demais participantes com respeito e colaboração.</p>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-number">05</div>
+        <div>
+          <strong><span class="rule-icon">⚠️</span>DESCUMPRIMENTO DAS REGRAS</strong>
+          <p>O desrespeito às regras poderá resultar na remoção do grupo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rules-highlight">
+      💙 <strong>Uma comunidade funciona quando todos colaboram.</strong><br>
+      Boa carona! 🚗
+    </div>
+  </section>
+
+  <div class="footer">
+    Comunidade Carona Solidária CAMG • Última atualização: 01/09/2026
+  </div>
+</main>
+
+<script>
+  const search = document.getElementById('search');
+  const cards = document.querySelectorAll('.card');
+
+  search.addEventListener('input', function () {
+    const term = this.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    cards.forEach(card => {
+      const text = (card.dataset.search || card.textContent).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      card.style.display = text.includes(term) ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
